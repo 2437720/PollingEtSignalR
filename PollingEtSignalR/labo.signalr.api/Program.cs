@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using labo.signalr.api.Data;
+using labo.signalr.api.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader()
         .AllowCredentials());
 });
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -57,6 +59,9 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 // TODO: SignalR: Ajouter la route vers le Hub
+app.MapHub<TestHub>("/hubController");
+
+
 
 app.Run();
 
