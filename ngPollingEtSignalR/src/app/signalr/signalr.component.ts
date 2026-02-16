@@ -31,7 +31,11 @@ export class SignalrComponent implements OnInit {
   taskname: string = '';
 
   ngOnInit(): void {
+    console.log(this.tasks)
     this.connecttohub();
+
+    console.log(this.tasks)
+
   }
 
   connecttohub() {
@@ -59,9 +63,17 @@ export class SignalrComponent implements OnInit {
 
   complete(id: number) {
     // TODO On invoke la méthode pour compléter une tâche sur le serveur
+    this.hubConnection!.invoke('Complete', id);
+    console.log("tâche complétée");
+    this.hubConnection!.on("V2", (tasks) => { this.tasks = tasks});
+
   }
 
   addtask() {
     // TODO On invoke la méthode pour ajouter une tâche sur le serveur
+
+    this.hubConnection?.invoke('AddTask', this.taskname);
+    console.log("tâche ajoutée");
+    this.hubConnection!.on("V2", (tasks) => { this.tasks = tasks});
   }
 }

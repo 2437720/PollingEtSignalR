@@ -63,9 +63,9 @@ export class PollingComponent implements OnInit {
   async updateTasks() {
     // TODO: Faire une première implémentation simple avec un appel au serveur pour obtenir la liste des tâches
     let x = await lastValueFrom(this.http.get<UselessTask[]>(this.apiUrl + "UselessTasks/GetAll"))
-    console.log(x)
+    //console.log(x)
 
-    this.tasks = x;
+    //this.tasks = x;
 
    
 
@@ -73,7 +73,7 @@ export class PollingComponent implements OnInit {
     // TODO: UNE FOIS QUE VOUS AVEZ TESTER AVEC DEUX CLIENTS: Utiliser le polling pour mettre la liste de tasks à jour chaque seconde
     //setTimeout(() => {this.updateTasks()}, 1000)
 
-    return x;
+    //return x;
 
   }
 }
