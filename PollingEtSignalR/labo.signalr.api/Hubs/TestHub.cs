@@ -8,6 +8,11 @@ using SQLitePCL;
 
 namespace labo.signalr.api.Hubs
 {
+
+    public static class UserHandler
+    {
+        public static HashSet<string> ConnectedIds = new HashSet<string>();
+    }
     public class TestHub : Hub
     {
 
@@ -22,10 +27,11 @@ namespace labo.signalr.api.Hubs
         {
             base.OnConnectedAsync();
             // TODO: Ajouter votre logique
-            List<UselessTask> TaskList = await _context.UselessTasks.ToListAsync();
+            UserHandler.ConnectedIds.Add(Context.ConnectionId);
+            await Clients.All.SendAsync("UserCount", UserHandler.ConnectedIds.Count);
+            await Clients.Caller.SendAsync("V2", _context.UselessTasks.ToList());
+            
 
-
-            await Clients.Caller.SendAsync("V2", TaskList);
             
         }
 
@@ -36,9 +42,9 @@ namespace labo.signalr.api.Hubs
             // TODO: Ajouter la tache dans la bd
             UselessTask newTask = new UselessTask() { Id = 0, Text = taskName };
             
-
             _context.UselessTasks.Add(newTask);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
+            await Clients.All.SendAsync("V2", _context.UselessTasks.ToList());
 
 
 
@@ -56,10 +62,18 @@ namespace labo.signalr.api.Hubs
 
             taskC.Completed = true;
 
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
+            await Clients.All.SendAsync("V2", _context.UselessTasks.ToList());
 
 
 
+        }
+
+        public override async Task OnDisconnectedAsync(Exception? exception)
+        {
+            UserHandler.ConnectedIds.Remove(Context.ConnectionId);
+            await Clients.All.SendAsync("UserCount", UserHandler.ConnectedIds.Count);
+            await base.OnDisconnectedAsync(exception);
         }
 
 

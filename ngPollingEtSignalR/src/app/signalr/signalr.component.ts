@@ -47,7 +47,14 @@ export class SignalrComponent implements OnInit {
 
     // TODO On peut commencer à écouter pour les évènements qui vont déclencher des callbacks
     // ajouter un .on qui écoute un message X et qui recoit la liste de tâches
-    this.hubConnection.on("V2", (tasks) => { this.tasks = tasks
+    this.hubConnection.on('UserCount', (count) => {
+      console.log(count)
+      this.usercount = count;
+    })
+
+    this.hubConnection.on("V2", (tasks) => { 
+      console.log(tasks);
+      this.tasks = tasks;
 // mettre la liste à jour
     });
 
@@ -64,8 +71,7 @@ export class SignalrComponent implements OnInit {
   complete(id: number) {
     // TODO On invoke la méthode pour compléter une tâche sur le serveur
     this.hubConnection!.invoke('Complete', id);
-    console.log("tâche complétée");
-    this.hubConnection!.on("V2", (tasks) => { this.tasks = tasks});
+    
 
   }
 
@@ -74,6 +80,6 @@ export class SignalrComponent implements OnInit {
 
     this.hubConnection?.invoke('AddTask', this.taskname);
     console.log("tâche ajoutée");
-    this.hubConnection!.on("V2", (tasks) => { this.tasks = tasks});
+   
   }
 }
